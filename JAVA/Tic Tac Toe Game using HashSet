@@ -1,0 +1,135 @@
+import java.util.HashSet;
+import java.util.Scanner;
+
+public class TicTacToe {
+    static HashSet<Integer> ur_set = new HashSet<Integer>();
+    static HashSet<Integer> comp_set = new HashSet<Integer>();
+
+    public static void main(String[] args) {
+        char Board[][] = {
+                { ' ', '|', ' ', '|', ' ' },
+                { '-', '|', '-', '|', '-' },
+                { ' ', '|', ' ', '|', ' ' },
+                { '-', '|', '-', '|', '-' },
+                { ' ', '|', ' ', '|', ' ' },
+        };
+        print_board(Board);
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.print("Enter a number from 1-9: ");
+            int userPosition = sc.nextInt();
+            while (ur_set.contains(userPosition) || comp_set.contains(userPosition)) {
+                System.out.println("Invalid position. Try again.");
+                userPosition = sc.nextInt();
+            }
+            place(Board, userPosition, "You");
+            String res = check();
+            if (res.length() > 0) {
+                System.out.println(res);
+                break;
+            }
+            int CpuPosition = gen_random();
+            while (ur_set.contains(CpuPosition) || comp_set.contains(CpuPosition)) {
+                CpuPosition = gen_random();
+            }
+            place(Board, CpuPosition, "Comp");
+            res = check();
+            if (res.length() > 0) {
+                System.out.println(res);
+                break;
+            }
+        }
+    }
+
+    static String check() {
+        HashSet<Integer> r1 = new HashSet<Integer>();
+        r1.add(1); r1.add(2); r1.add(3);
+        HashSet<Integer> r2 = new HashSet<Integer>();
+        r2.add(4); r2.add(5); r2.add(6);
+        HashSet<Integer> r3 = new HashSet<Integer>();
+        r3.add(7); r3.add(8); r3.add(9);
+        HashSet<Integer> c1 = new HashSet<Integer>();
+        c1.add(1); c1.add(4); c1.add(7);
+        HashSet<Integer> c2 = new HashSet<Integer>();
+        c2.add(2); c2.add(5); c2.add(8);
+        HashSet<Integer> c3 = new HashSet<Integer>();
+        c3.add(3); c3.add(6); c3.add(9);
+        HashSet<Integer> d2 = new HashSet<Integer>();
+        d2.add(1); d2.add(5); d2.add(9);
+        HashSet<Integer> d3 = new HashSet<Integer>();
+        d3.add(3); d3.add(5); d3.add(7);
+        HashSet<HashSet> set = new HashSet<HashSet>();
+        set.add(r1); set.add(r2); set.add(r3);
+        set.add(c1); set.add(c2); set.add(c3);
+        set.add(d2); set.add(d3);
+        for (HashSet<Integer> c : set) {
+            if (ur_set.containsAll(c))
+                return "YOU WON!";
+            else if (comp_set.containsAll(c))
+                return "YOU LOST!";
+        }
+        if (ur_set.size() + comp_set.size() == 9)
+            return "DRAW!";
+        return "";
+    }
+
+    static int gen_random() {
+        int max = 9;
+        int min = 1;
+        int range = max - min + 1;
+        int res = (int) (Math.random() * range) + min;
+        return res;
+    }
+
+    static void print_board(char Board[][]) {
+        for (int r = 0; r < Board.length; r++) {
+            for (int c = 0; c < Board[0].length; c++) {
+                System.out.print(Board[r][c]);
+            }
+            System.out.println();
+        }
+    }
+
+    static void place(char Board[][], int pos, String user) {
+        char bol = 'X';
+        if (user.equals("You")) {
+            bol = 'X';
+            ur_set.add(pos);
+        } else if (user.equals("Comp")) {
+            bol = 'O';
+            comp_set.add(pos);
+        }
+        switch (pos) {
+            case 1:
+                Board[0][0] = bol;
+                break;
+            case 2:
+                Board[0][2] = bol;
+                break;
+            case 3:
+                Board[0][4] = bol;
+                break;
+            case 4:
+                Board[2][0] = bol;
+                break;
+            case 5:
+                Board[2][2] = bol;
+                break;
+            case 6:
+                Board[2][4] = bol;
+                break;
+            case 7:
+                Board[4][0] = bol;
+                break;
+            case 8:
+                Board[4][2] = bol;
+                break;
+            case 9:
+                Board[4][4] = bol;
+                break;
+            default:
+                System.out.println("Invalid");
+        }
+        print_board(Board);
+    }
+}
